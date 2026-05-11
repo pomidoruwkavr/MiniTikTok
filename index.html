@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiniTikTok — Oficjalna Platforma</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #e8131b;
+      --red-dark: #b00e14;
+      --green: #1db954;
+      --green-dark: #158a3e;
+      --black: #0a0a0a;
+      --dark: #111111;
+      --card-bg: #1a1a1a;
+      --card-border: #2a2a2a;
+      --text: #f0f0f0;
+      --muted: #888;
+    }
+
+    body {
+      background-color: var(--black);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--dark);
+      border-bottom: 2px solid var(--red);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+
+    .logo .mini { color: var(--text); }
+    .logo .tiktok { color: var(--green); }
+
+    .header-badge {
+      background: var(--red);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    /* HERO BANNER */
+    .hero {
+      background: linear-gradient(135deg, var(--red-dark) 0%, var(--black) 60%);
+      padding: 48px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(232,19,27,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 56px;
+      letter-spacing: 4px;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 480px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      background: var(--green);
+      color: var(--black);
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 12px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .hero-cta:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+    /* INFO BOX */
+    .info-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--green);
+      margin: 32px auto;
+      width: 90%;
+      max-width: 860px;
+      border-radius: 8px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .info-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+
+    .info-box p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .info-box a { color: var(--green); text-decoration: none; font-weight: 700; }
+    .info-box a:hover { text-decoration: underline; }
+
+    /* SECTION TITLE */
+    .section-title {
+      text-align: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 3px;
+      color: var(--muted);
+      margin: 0 0 20px;
+    }
+
+    .section-title span { color: var(--red); }
+
+    /* VIDEO GRID */
+    .videos-wrapper {
+      width: 90%;
+      max-width: 860px;
+      margin: 0 auto 32px;
+    }
+
+    .video-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .video-card.active { display: block; }
+
+    .video-header {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .video-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 13px;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .video-info { flex: 1; }
+
+    .video-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .video-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .video-badge {
+      background: var(--green);
+      color: var(--black);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    iframe {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: none;
+      display: block;
+    }
+
+    /* EMPTY SLOT */
+    .empty-slot {
+      aspect-ratio: 16 / 9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #141414;
+    }
+
+    .empty-slot .icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px dashed var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--card-border);
+      font-size: 22px;
+    }
+
+    .empty-slot p {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* BUTTONS */
+    .btn-show-more {
+      display: block;
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto 16px;
+      background: transparent;
+      border: 1px solid var(--red);
+      color: var(--red);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      padding: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-show-more:hover { background: var(--red); color: white; }
+
+    .btn-show-all {
+      background: transparent;
+      border: 1px solid #444;
+      color: #888;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      padding: 14px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-show-all:hover { background: #222; color: var(--text); border-color: #666; }
+
+    /* DONATE SECTION */
+    .donate-section {
+      width: 90%;
+      max-width: 860px;
+      margin: 32px auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .donate-section h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .donate-section p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .donate-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-steam {
+      display: inline-block;
+      background: #1b2838;
+      border: 1px solid #2a475e;
+      color: #c7d5e0;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-steam:hover { background: #2a475e; transform: translateY(-1px); }
+    .btn-steam .steam-icon { margin-right: 6px; }
+
+    /* FOOTER */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid var(--card-border);
+      text-align: center;
+      padding: 28px 24px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    footer .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    footer .footer-logo .mini { color: var(--text); }
+    footer .footer-logo .tiktok { color: var(--green); }
+    footer a { color: var(--green); text-decoration: none; }
+
+    /* LOADING */
+    .loading-box {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--card-border);
+      border-top-color: var(--red);
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* BANNER */
+    .banner {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 280px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-left: 4px solid var(--red);
+      border-radius: 10px;
+      padding: 16px 16px 14px;
+      z-index: 300;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      transform: translateX(320px);
+      transition: transform 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+
+    .banner.visible { transform: translateX(0); }
+
+    .banner-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .banner-tag {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    .banner-close {
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .banner-close:hover { color: var(--text); }
+
+    .banner h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 1.5px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .banner p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .banner a {
+      display: block;
+      background: var(--red);
+      color: white;
+      text-align: center;
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      padding: 9px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .banner a:hover { background: var(--red-dark); }
+
+    .banner-timer {
+      height: 3px;
+      background: #2a2a2a;
+      border-radius: 2px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .banner-timer-bar {
+      height: 100%;
+      background: var(--red);
+      width: 100%;
+      transform-origin: left;
+      transition: transform linear;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 38px; }
+      .logo { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <span class="mini">Mini</span><span class="tiktok">TikTok</span>
+    </div>
+    <span class="header-badge">Oficjalna Platforma</span>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1><span style="color:var(--text)">Mini</span><span style="color:var(--green)">TikTok</span></h1>
+    <p>Platforma filmowa stworzona przez społeczność. Oglądaj, dziel się i przesyłaj swoje filmy.</p>
+    <a href="https://minitiktokzasady.netlify.app" target="_blank" class="hero-cta">Przeczytaj regulamin &rarr;</a>
+  </section>
+
+  <!-- INFO -->
+  <div class="info-box">
+    <div class="info-icon">📋</div>
+    <p>Chcesz przesłać swój film na platformę? Najpierw przeczytaj <a href="https://minitiktokzasady.netlify.app" target="_blank">regulamin MiniTikTok</a>, a następnie wyślij materiał na adres <a href="mailto:MiniTikTokFilmAdd@gmail.com">MiniTikTokFilmAdd@gmail.com</a>.</p>
+  </div>
+
+  <!-- FILMY -->
+  <!-- Aby dodać film: skopiuj blok video-card i zmień data-nick, data-very="on"/"off", data-link="https://..." -->
+  <div class="videos-wrapper">
+    <p class="section-title">Filmy na <span>platformie MTT</span></p>
+
+    <div class="video-card" data-nick="MiniTikTok"   data-very="on"  data-link="film.PNG"></div>
+    <div class="video-card" data-nick="nickname"      data-very="off" data-link="link do materiału"></div>
+    <div class="video-card" data-nick="ModeratorMTT"  data-very="on"  data-link="link do materiału"></div>
+    <div class="video-card" data-nick="Ktoś"          data-very="off" data-link="link do materiału"></div>
+
+  </div>
+
+  <div style="width:90%;max-width:860px;margin:0 auto 16px;display:flex;gap:12px;">
+    <button class="btn-show-more" id="btn-wiecej" onclick="pokazWiecej()" style="margin:0;flex:1;">▼ Pokaż więcej filmów</button>
+    <button class="btn-show-all" id="btn-wszystko" onclick="pokazWszystko()">⬇ Wyświetl wszystko</button>
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal-overlay" onclick="zamknijModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;">
+    <div id="modal-box" onclick="event.stopPropagation()" style="background:#1a1a1a;border:1px solid #2a2a2a;border-top:3px solid var(--red);border-radius:12px;padding:32px 28px;max-width:380px;width:90%;text-align:center;">
+      <div style="font-size:36px;margin-bottom:12px;">🎬</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:8px;color:var(--text);">Wyświetlić wszystko?</h2>
+      <p style="color:#888;font-size:14px;margin-bottom:24px;line-height:1.6;">Wszystkie filmy zostaną załadowane naraz. Czy na pewno chcesz kontynuować?</p>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button onclick="zamknijModal()" style="flex:1;padding:12px;background:transparent;border:1px solid #2a2a2a;color:#888;font-size:14px;font-weight:700;border-radius:8px;cursor:pointer;">Anuluj</button>
+        <button onclick="potwierdzWszystko()" style="flex:1;padding:12px;background:var(--red);border:none;color:white;font-size:14px;font-weight:700;border-radius:8px;cursor:pointer;">Tak, pokaż!</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo"><span class="mini">Mini</span><span class="tiktok">TikTok</span></span>
+    Stworzone przez <strong>PomidoruwkaVR</strong> &nbsp;|&nbsp; Wszelkie prawa zastrzeżone &copy; 2026 &ndash; 2030<br>
+    <a href="https://minitiktokzasady.netlify.app" target="_blank">Regulamin platformy</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:MiniTikTokFilmAdd@gmail.com">Kontakt</a>
+  </footer>
+
+  <!-- BANNER -->
+  <div class="banner" id="banner">
+    <div class="banner-top">
+      <span class="banner-tag">📹 MiniTikTok</span>
+      <button class="banner-close" onclick="zamknijBanner()">✕</button>
+    </div>
+    <h4>Wstaw swój film!</h4>
+    <p>Chcesz być na platformie? Wyślij swój materiał i dołącz do społeczności MTT.</p>
+    <a href="mailto:MiniTikTokFilmAdd@gmail.com">Wyślij film →</a>
+    <a href="https://discord.gg/afWka6SUd" target="_blank" style="margin-top:8px;background:#5865F2;">Dołącz do Discord →</a>
+    <div class="banner-timer"><div class="banner-timer-bar" id="banner-bar"></div></div>
+  </div>
+
+  <script>
+    const avatarColors = ['#e8131b','#1db954','#6622cc','#e87d13','#1377e8','#e813b0'];
+    let pokazane = 1;
+
+    function budujKarty() {
+      const karty = document.querySelectorAll('.video-card');
+      karty.forEach((karta, idx) => {
+        const nick = karta.dataset.nick || 'Anonim';
+        const very = karta.dataset.very === 'on';
+        const link = karta.dataset.link || '';
+        const isSlot = !link || link === 'link do materiału';
+        const kolor = avatarColors[idx % avatarColors.length];
+
+        karta.innerHTML = `
+          <div class="video-header">
+            <div class="video-avatar" style="background:${kolor};">${nick.slice(0,2).toUpperCase()}</div>
+            <div class="video-info">
+              <div class="video-title">@${nick}</div>
+              <div class="video-meta">${very ? 'Konto zweryfikowane' : 'Konto niezweryfikowane'}</div>
+            </div>
+            ${very ? '<span class="video-badge">✓ Zweryfikowany</span>' : ''}
+          </div>
+          ${isSlot
+            ? `<div class="empty-slot"><div class="icon">+</div><p>Ten slot czeka na film!</p></div>`
+            : `<iframe src="${link}" allowfullscreen></iframe>`}
+        `;
+
+        if (idx === 0) karta.classList.add('active');
+      });
+
+      aktualizujPrzycisk();
+    }
+
+    function pokazWiecej() {
+      const karty = document.querySelectorAll('.video-card');
+      if (pokazane < karty.length) {
+        karty[pokazane].classList.add('active');
+        pokazane++;
+        aktualizujPrzycisk();
+      }
+    }
+
+    function aktualizujPrzycisk() {
+      const btn = document.getElementById('btn-wiecej');
+      const karty = document.querySelectorAll('.video-card');
+      if (pokazane >= karty.length) {
+        btn.textContent = '✓ Pokazano wszystkie filmy';
+        btn.style.borderColor = 'var(--green)';
+        btn.style.color = 'var(--green)';
+        btn.disabled = true;
+        btn.style.cursor = 'default';
+      }
+    }
+
+    function pokazWszystko() {
+      const overlay = document.getElementById('modal-overlay');
+      overlay.style.display = 'flex';
+    }
+
+    function zamknijModal() {
+      document.getElementById('modal-overlay').style.display = 'none';
+    }
+
+    function potwierdzWszystko() {
+      zamknijModal();
+      const karty = document.querySelectorAll('.video-card');
+      karty.forEach(k => k.classList.add('active'));
+      pokazane = karty.length;
+      aktualizujPrzycisk();
+      document.getElementById('btn-wszystko').textContent = '✓ Wszystko załadowane';
+      document.getElementById('btn-wszystko').style.borderColor = 'var(--green)';
+      document.getElementById('btn-wszystko').style.color = 'var(--green)';
+      document.getElementById('btn-wszystko').disabled = true;
+      document.getElementById('btn-wszystko').style.cursor = 'default';
+    }
+
+    // BANNER
+    const BANNER_CZAS = 50000;    // 50 sekund widoczności
+    const BANNER_PRZERWA = 600000; // 10 minut przerwy
+
+    let bannerTimeout, bannerHideTimeout;
+
+    function pokazBanner() {
+      const banner = document.getElementById('banner');
+      const bar = document.getElementById('banner-bar');
+      banner.classList.add('visible');
+      bar.style.transition = 'none';
+      bar.style.transform = 'scaleX(1)';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          bar.style.transition = `transform ${BANNER_CZAS}ms linear`;
+          bar.style.transform = 'scaleX(0)';
+        });
+      });
+      bannerHideTimeout = setTimeout(zamknijBanner, BANNER_CZAS);
+    }
+
+    function zamknijBanner() {
+      const banner = document.getElementById('banner');
+      banner.classList.remove('visible');
+      clearTimeout(bannerHideTimeout);
+      bannerTimeout = setTimeout(pokazBanner, BANNER_PRZERWA);
+    }
+
+    // Pierwsze pokazanie po 3 sekundach od wejścia
+    setTimeout(pokazBanner, 3000);
+
+    budujKarty();
+  </script>
+</body>
+</html>
